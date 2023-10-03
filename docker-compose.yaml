@@ -1,0 +1,11 @@
+version: '3'
+services:
+  nodejsapp:
+    image: nodejsapp:latest  # Replace with the appropriate Node.js version
+    container_name: nodejsapp
+    ports:
+      - "3000:3000"
+    working_dir: /app  # new volume con container
+    volumes:
+      - ./app:/app    # from repo to /
+    command: npm start  # Replace with the start command for your Node.js app
