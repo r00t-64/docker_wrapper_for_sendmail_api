@@ -13,8 +13,8 @@ RUN npm install
 # Copy the rest of the application source code to the container
 COPY api/ ./
 
-# Expose port 3000
-EXPOSE 3000
+# Expose port 3325
+EXPOSE 3325
 
 # Start the application
 CMD ["node", "server.js"]

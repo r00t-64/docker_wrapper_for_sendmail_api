@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
     container_name: nodejsapp # Replace with the appropriate Node.js version
     ports:
-      - "3000:3000"
+      - "3325:3325"
     working_dir: /api  # new volume con container
     volumes:
       - ./api:/api    # from repo to /
