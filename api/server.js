@@ -5,7 +5,7 @@ const sgMail = require('@sendgrid/mail');
 const Mailgen = require('mailgen');
 require('dotenv').config();
 const app = express();
-const port = 3000;
+const port = 3325;
 
 app.use(express.json());
 
@@ -52,6 +52,6 @@ app.post('/send-email', async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Server is running on http://0.0.0.0:${port}`);
 });
