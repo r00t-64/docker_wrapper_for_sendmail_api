@@ -1,9 +1,9 @@
 const express = require('express');
-const nodemailer = require('nodemailer');
 const sgMail = require('@sendgrid/mail');
 const morgan = require('morgan');
 const fs = require('fs');
 const path = require('path');
+const handlebars = require('handlebars');
 require('dotenv').config();
 
 const app = express();
@@ -13,12 +13,16 @@ const port = 3325;
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
 
 // Use morgan middleware for request logging
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms - :remote-addr - :req[body]', { stream: accessLogStream }));
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms - :remote-addr - :req[body]')); // Log to console
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms - :date[web] - :remote-addr - :req[body]', { stream: accessLogStream }));
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms - :date[web] - :remote-addr - :req[body]')); // Log to console
 
 app.use(express.json());
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+// Load the HTML template
+const source = fs.readFileSync(path.join(__dirname, 'email-template.hbs'), 'utf8');
+const template = handlebars.compile(source);
 
 app.post('/send-email', async (req, res) => {
   const { to, subject, text } = req.body;
@@ -27,15 +31,24 @@ app.post('/send-email', async (req, res) => {
     return res.status(400).json({ error: 'Missing required parameters' });
   }
 
-  const mailOptions = {
-    from: 'business.isaacrivera@proton.me',
+  const emailBodyData = {
     to,
     subject,
     text,
   };
 
+  // Generate the HTML body using the Handlebars template
+  const emailBody = template(emailBodyData);
+  
+  const emailOptions = {
+    from: 'business.isaacrivera@proton.me',
+    to,
+    subject,
+    html: emailBody,
+  };
+
   try {
-    const info = await sgMail.send(mailOptions);
+    const info = await sgMail.send(emailOptions);
     res.json({ success: 'Email sent successfully', info });
   } catch (error) {
     console.error('Error:', error);
