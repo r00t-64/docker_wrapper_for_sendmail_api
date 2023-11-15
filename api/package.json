@@ -1,6 +1,6 @@
 {
     "name": "emailsender_api",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Email Sender Api with Expressjs",
     "main": "server.js",
     "dependencies": {
@@ -12,7 +12,6 @@
         "express": "^4.18.2",
         "handlebars": "^4.7.8",
         "mailgen": "^2.0.28",
-        "morgan": "^1.10.0",
-        "nodemailer": "^6.9.7"
+        "morgan": "^1.10.0"
     }
 }
