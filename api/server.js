@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const fs = require('fs');
 const path = require('path');
 const handlebars = require('handlebars');
+const cors = require('cors'); 
 require('dotenv').config();
 
 const app = express();
@@ -17,6 +18,8 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms - 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms - :date[web] - :remote-addr - :req[body]')); // Log to console
 
 app.use(express.json());
+
+app.use(cors()); // Enable CORS for all routes
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
