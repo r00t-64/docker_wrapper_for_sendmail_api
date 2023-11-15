@@ -1,15 +1,23 @@
 const express = require('express');
 const nodemailer = require('nodemailer');
-// const nodemailerSendgrid = require('nodemailer-sendgrid');
 const sgMail = require('@sendgrid/mail');
-const Mailgen = require('mailgen');
+const morgan = require('morgan');
+const fs = require('fs');
+const path = require('path');
 require('dotenv').config();
+
 const app = express();
 const port = 3325;
 
+// Create a write stream for logging
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
+
+// Use morgan middleware for request logging
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms - :remote-addr - :req[body]', { stream: accessLogStream }));
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms - :remote-addr - :req[body]')); // Log to console
+
 app.use(express.json());
 
-// Set the SendGrid API key
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 app.post('/send-email', async (req, res) => {
@@ -19,14 +27,6 @@ app.post('/send-email', async (req, res) => {
     return res.status(400).json({ error: 'Missing required parameters' });
   }
 
-//   const transporter = nodemailer.createTransport({
-//     service: 'gmail',
-//     auth: {
-//       user: process.env.EMAIL_APP_USER,
-//       pass: process.env.EMAIL_APP_PASSWORD, 
-//     },
-//   });
-  
   const mailOptions = {
     from: 'business.isaacrivera@proton.me',
     to,
@@ -34,17 +34,8 @@ app.post('/send-email', async (req, res) => {
     text,
   };
 
-  // transporter.sendMail(mailOptions, (error, info) => {
-  //   if (error) {
-  //     return res.status(500).json({ error: 'Failed to send email', details: error.message });
-  //   }
-
-  //   res.json({ success: 'Email sent successfully', info });
-  // });
   try {
-    // Send the email using SendGrid
     const info = await sgMail.send(mailOptions);
-
     res.json({ success: 'Email sent successfully', info });
   } catch (error) {
     console.error('Error:', error);
