@@ -7,7 +7,7 @@ services:
     container_name: nodejsapp # Replace with the appropriate Node.js version
     ports:
       - "3000:3000"
-    working_dir: /app  # new volume con container
+    working_dir: /api  # new volume con container
     volumes:
-      - ./app:/app    # from repo to /
+      - ./api:/api    # from repo to /
     command: npm start  # Replace with the start command for your Node.js app
