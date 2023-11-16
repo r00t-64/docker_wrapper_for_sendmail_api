@@ -26,10 +26,10 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // Create a Mailgen instance
 const mailGenerator = new Mailgen({
-  theme: 'default',
+  theme: 'cerberus',
   product: {
-    name: 'Your App Name',
-    link: 'http://yourapp.com',
+    name: 'Isaac A. Rivera',
+    link: 'https://isaac-alexis44.web.app/',
     // Add more product information if needed
   },
 });
@@ -44,7 +44,7 @@ app.post('/send-email', async (req, res) => {
   // Generate HTML email using Mailgen
   const emailBody = mailGenerator.generate({
     body: {
-      intro: 'Contact Information',
+      intro: 'Potential Customer',
       table: {
         data: [
           { name: 'Name', name },
