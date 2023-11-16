@@ -1,0 +1,3 @@
+[submodule "send_mail_api"]
+	path = send_mail_api
+	url = https://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@github.com/r00t-64/send_mail_api.git
