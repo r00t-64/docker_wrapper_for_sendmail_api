@@ -3,8 +3,7 @@ const sgMail = require('@sendgrid/mail');
 const morgan = require('morgan');
 const fs = require('fs');
 const path = require('path');
-const handlebars = require('handlebars');
-const cors = require('cors'); 
+const Mailgen  = require('mailgen'); // Import Mailgen
 require('dotenv').config();
 
 const app = express();
@@ -19,13 +18,17 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms - 
 
 app.use(express.json());
 
-app.use(cors()); // Enable CORS for all routes
-
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-// Load the HTML template
-const source = fs.readFileSync(path.join(__dirname, 'email-template.hbs'), 'utf8');
-const template = handlebars.compile(source);
+// Create a Mailgen instance
+const mailGenerator = new Mailgen({
+  theme: 'default',
+  product: {
+    name: 'Your App Name',
+    link: 'http://yourapp.com',
+    // Add more product information if needed
+  },
+});
 
 app.post('/send-email', async (req, res) => {
   const { to, subject, text } = req.body;
@@ -34,15 +37,22 @@ app.post('/send-email', async (req, res) => {
     return res.status(400).json({ error: 'Missing required parameters' });
   }
 
-  const emailBodyData = {
-    to,
-    subject,
-    text,
-  };
+  // Generate HTML email using Mailgen
+  const emailBody = mailGenerator.generate({
+    body: {
+      intro: 'Contact Information',
+      table: {
+        data: [
+          { name: 'Name', value: formData.name },
+          { name: 'Email', value: formData.email },
+          { name: 'Phone', value: formData.phone || 'Not provided' },
+          { name: 'Message', value: formData.message },
+        ],
+      },
+      outro: 'Thank you for reaching out!',
+    },
+  });
 
-  // Generate the HTML body using the Handlebars template
-  const emailBody = template(emailBodyData);
-  
   const emailOptions = {
     from: 'business.isaacrivera@proton.me',
     to,
