@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const fs = require('fs');
 const path = require('path');
 const Mailgen  = require('mailgen'); // Import Mailgen
+const cors = require('cors'); 
 require('dotenv').config();
 
 const app = express();
@@ -15,6 +16,9 @@ const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'),
 // Use morgan middleware for request logging
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms - :date[web] - :remote-addr - :req[body]', { stream: accessLogStream }));
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms - :date[web] - :remote-addr - :req[body]')); // Log to console
+
+
+app.use(cors()); // Enable CORS for all routes
 
 app.use(express.json());
 
