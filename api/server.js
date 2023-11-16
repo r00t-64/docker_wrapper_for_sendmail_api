@@ -8,17 +8,21 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
-const port = 3325;
 
 // Create a write stream for logging
-const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
+// const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
 
 // Use morgan middleware for request logging
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms - :date[web] - :remote-addr - :req[body]', { stream: accessLogStream }));
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms - :date[web] - :remote-addr - :req[body]')); // Log to console
+// app.use(morgan(':method :url :status :res[content-length] - :response-time ms - :date[web] - :remote-addr - :req[body]', { stream: accessLogStream }));
+// app.use(morgan(':method :url :status :res[content-length] - :response-time ms - :date[web] - :remote-addr - :req[body]')); // Log to console
 
 
-app.use(cors()); // Enable CORS for all routes
+// Use cors middleware with specific configurations
+app.use(cors({
+  origin: 'https://isaac-alexis44.web.app',
+  methods: ['POST', 'GET', 'OPTIONS'], // Add other allowed methods as needed
+  allowedHeaders: ['Content-Type'], // Add other allowed headers as needed
+}));
 
 app.use(express.json());
 
@@ -26,7 +30,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // Create a Mailgen instance
 const mailGenerator = new Mailgen({
-  theme: 'cerberus',
+  theme: 'default',
   product: {
     name: 'Isaac A. Rivera',
     link: 'https://isaac-alexis44.web.app/',
@@ -73,6 +77,6 @@ app.post('/send-email', async (req, res) => {
   }
 });
 
-app.listen(port, '0.0.0.0', () => {
-  console.log(`Server is running on http://0.0.0.0:${port}`);
+app.listen(process.env.PORT , '0.0.0.0', () => {
+  console.log(`Server is running on http://0.0.0.0:${process.env.PORT}`);
 });
