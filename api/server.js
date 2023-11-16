@@ -35,7 +35,7 @@ const mailGenerator = new Mailgen({
 });
 
 app.post('/send-email', async (req, res) => {
-  const { to, subject, text } = req.body;
+  const { to, subject, text, name, email, phone, message } = req.body;
 
   if (!to || !subject || !text) {
     return res.status(400).json({ error: 'Missing required parameters' });
@@ -47,10 +47,10 @@ app.post('/send-email', async (req, res) => {
       intro: 'Contact Information',
       table: {
         data: [
-          { name: 'Name', value: formData.name },
-          { name: 'Email', value: formData.email },
-          { name: 'Phone', value: formData.phone || 'Not provided' },
-          { name: 'Message', value: formData.message },
+          { name: 'Name', name },
+          { name: 'Email', email },
+          { name: 'Phone', phone },
+          { name: 'Message', message },
         ],
       },
       outro: 'Thank you for reaching out!',
